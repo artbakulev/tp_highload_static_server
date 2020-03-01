@@ -18,7 +18,10 @@ class Request:
 
     def _parse_request(self, raw: str):
         parts = raw.split(self.DELIMITER)
-        self.method, self.url, self.protocol = parts[0].split(' ')
+        try:
+            self.method, self.url, self.protocol = parts[0].split(' ')
+        except ValueError:
+            pass
         for i in range(1, len(parts)):
             try:
                 k, v = parts[i].split(self.HEADERS_DELIMITER)
@@ -26,7 +29,7 @@ class Request:
             except ValueError:
                 pass
 
-    def validate_request(self) -> Response:
+    async def validate_request(self) -> Response:
         """:return: invalid response if does not validate"""
         if self.method not in self.config.get_list('allowed_methods'):
             return Response(self.config, status=405)
@@ -35,9 +38,9 @@ class Request:
             return Response(config=self.config, status=404)
 
         if self.url == '/':
-            self.url = self.INDEX_FILE
+            self.url = os.path.join(self.config.root, self.INDEX_FILE)
 
-        if self.url not in self.config.root:
+        if self.config.root not in self.url:
             return Response(self.config, status=403)
 
         if os.path.isdir(self.url):

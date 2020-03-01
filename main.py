@@ -1,6 +1,8 @@
 import asyncio
 import logging
 
+import uvloop
+
 from app.config.Config import Config
 
 config = Config('configs.yaml')
@@ -9,9 +11,12 @@ if __name__ == '__main__':
     from app.server.Server import Server
     from app.server.Worker import Worker
 
-    loop = asyncio.get_event_loop()
-    server = Server(config, loop)
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    server = Server(config)
     server.connect()
+    loop = uvloop.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.set_debug(True)
 
     workers = [Worker(loop, server.connection, config=config) for _ in range(config.get_int('workers_num', fallback=8))]
     asyncio.gather(*[loop.create_task(worker.run()) for worker in workers])
@@ -20,4 +25,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         logging.info('shutting down...')
         [worker.stop() for worker in workers]
-        server.connection.shutdown()
+        server.connection.close()

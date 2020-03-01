@@ -1,16 +1,14 @@
-import asyncio
 import logging
 import socket
 
 
 class Server:
-    def __init__(self, config, loop: asyncio.AbstractEventLoop):
+    def __init__(self, config):
         self.config = config
         self.host = config.get_str('host', fallback='127.0.0.1')
         self.port = config.get_int('port', fallback=8001)
         self.backlog = config.get_int('backlog', fallback=8)
         self.address = f'{self.host}:{self.port}'
-        self.loop = loop
         self.connection = None
 
     def connect(self):

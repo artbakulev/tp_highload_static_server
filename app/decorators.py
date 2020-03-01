@@ -7,5 +7,6 @@ def with_connection(func):
             return func(*args, **kwargs)
         except BrokenPipeError as e:
             logging.error(e)
+            kwargs['conn'].close()
 
     return wrapper

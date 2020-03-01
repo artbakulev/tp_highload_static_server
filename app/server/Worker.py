@@ -18,17 +18,19 @@ class Worker:
         logging.info(f'worker with id {id(self)} was destroyed')
 
     async def run(self):
-        while self.is_run:
-            conn, _ = await self.loop.sock_accept(self.socket)
-            await self.loop.create_task(self.handle(conn))
+        try:
+            while self.is_run:
+                conn, _ = await self.loop.sock_accept(self.socket)
+                await self.loop.create_task(self.handle(conn))
+        except Exception as e:
+            logging.error(e)
 
     async def handle(self, conn):
         request = await self.loop.sock_recv(conn, self.config.get_int('max_socket_size', fallback=1024))
-        logging.info(f'new client connected')
         request = Request(request.decode('utf-8'), config=self.config)
-        response = request.validate_request()
+        response = await request.validate_request()
         if response is None:
-            response = Response(self.config, status=200, path_to_file=request.url)
+            response = Response(self.config, method=request.method, status=200, path_to_file=request.url)
         await response.send(self.loop, conn)
         conn.close()
 
