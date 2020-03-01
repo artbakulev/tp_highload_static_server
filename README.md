@@ -1,11 +1,18 @@
 ### Highload python static server based on asyncio
 
-#### Запуск через докер:
+#### Запуск через Docker:
 
 ```
 docker build -t artbakulev .
 docker run -p 80:80 -v httpd.conf:/etc/httpd.conf:ro -v /{absolute_path_to_project}/tp_highload_static_server/http-test-suite:/var/www/html:ro tp-highload-hw1:latest
 ```
+
+### Запуск без контейнера:
+
+```
+python main.py
+```
+все конфиги в configs.yaml
 
 #### Прогон тестов:
 ```
@@ -16,7 +23,7 @@ python2 httptest.py
  ### Нагрузка через ab:
  
  ```
- ab -n 100000 -c 100 localhost/httptest/wikipedia_russia.html
+ ab -n 100000 -c 100 127.0.0.1/httptest/wikipedia_russia.html
  ```
  
  ### Запуск nginx:
