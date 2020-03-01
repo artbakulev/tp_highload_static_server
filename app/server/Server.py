@@ -1,11 +1,11 @@
 import asyncio
+import logging
 import socket
-
-from app.config.config import Config
 
 
 class Server:
-    def __init__(self, config: Config, loop: asyncio.AbstractEventLoop):
+    def __init__(self, config, loop: asyncio.AbstractEventLoop):
+        self.config = config
         self.host = config.get_str('host', fallback='127.0.0.1')
         self.port = config.get_int('port', fallback=8001)
         self.backlog = config.get_int('backlog', fallback=8)
@@ -19,7 +19,8 @@ class Server:
         conn.listen(self.backlog)
         conn.setblocking(False)
         self.connection = conn
+        logging.info(f'server listens on {self.address}')
 
-    @property
-    def socket(self):
-        return self.socket
+    def __del__(self):
+        logging.info(f'server was destroyed')
+

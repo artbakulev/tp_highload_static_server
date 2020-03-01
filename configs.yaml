@@ -1,0 +1,7 @@
+host: 127.0.0.1
+port: 8080
+backlog: 8
+workers_num: 2
+max_socket_size: 1024
+allowed_methods: GET, HEAD
+log_level: DEBUG
