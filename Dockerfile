@@ -1,15 +1,10 @@
-FROM ubuntu:18.04
+FROM python:3
 
-RUN apt-get -y update &&\
-    apt-get -y upgrade &&\
-    apt-get -y install python3-pip &&\
-    apt-get install atop -y
+WORKDIR /usr/src/app
 
-ADD . .
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip3 install -r requirements.txt
+COPY . .
 
-
-EXPOSE 80
-
-CMD python3 main.py
+CMD [ "python", "main.py" ]

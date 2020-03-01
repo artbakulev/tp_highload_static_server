@@ -1,4 +1,3 @@
-import logging
 import os
 from urllib import parse
 

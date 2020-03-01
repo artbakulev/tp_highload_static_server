@@ -14,12 +14,9 @@ class Worker:
         self.is_run = True
 
     async def run(self):
-        try:
-            while self.is_run:
-                conn, _ = await self.loop.sock_accept(self.socket)
-                await self.loop.create_task(self.handle(conn))
-        except Exception as e:
-            logging.error(e)
+        while self.is_run:
+            conn, _ = await self.loop.sock_accept(self.socket)
+            await self.loop.create_task(self.handle(conn))
 
     async def handle(self, conn):
         request = await self.loop.sock_recv(conn, self.config.get_int('max_socket_size', fallback=1024))

@@ -15,7 +15,6 @@ STATUS_MESSAGES = {
 
 
 class Response:
-    MAX_SOCKET_SIZE = 1024
 
     def __init__(self, config, method: str = 'GET', protocol: str = 'HTTP/1.1', status: int = 200,
                  path_to_file: [str, None] = None):
@@ -27,7 +26,7 @@ class Response:
                         'Date': datetime.datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')}
         self.path_to_file = path_to_file
         self.raw = None
-        self.max_socket_size = self.MAX_SOCKET_SIZE
+        self.max_socket_size = self.config.get_int('max_socket_size')
         if self.path_to_file is not None:
             self.add_mime_headers()
 
