@@ -12,10 +12,6 @@ class Worker:
         self.socket: s.socket = socket
         self.loop: asyncio.AbstractEventLoop = loop
         self.is_run = True
-        logging.info(f'worker with id {id(self)} was created')
-
-    def __del__(self):
-        logging.info(f'worker with id {id(self)} was destroyed')
 
     async def run(self):
         try:

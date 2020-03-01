@@ -41,6 +41,6 @@ class Config:
         return raw.split(', ') or fallback
 
     def init(self):
-        self.root = os.path.abspath(self.get_str('root_path', fallback=os.getcwd()))
+        self.root = os.path.abspath(os.path.join(os.getcwd(), self.get_str('root_path', fallback='.')))
         logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
                             level=self.get_str('log_level', fallback='DEBUG'))
