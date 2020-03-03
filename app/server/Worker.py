@@ -13,6 +13,11 @@ class Worker:
         self.loop: asyncio.AbstractEventLoop = loop
         self.is_run = True
 
+    async def start(self, executor):
+        await self.loop.run_in_executor(
+            executor, self.run()
+        )
+
     async def run(self):
         while self.is_run:
             conn, _ = await self.loop.sock_accept(self.socket)
