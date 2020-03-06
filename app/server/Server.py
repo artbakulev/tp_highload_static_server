@@ -21,4 +21,5 @@ class Server:
 
     def __del__(self):
         logging.info(f'server was destroyed')
+        # self.connection.close()
 

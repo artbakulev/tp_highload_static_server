@@ -6,3 +6,4 @@ allowed_methods: GET, HEAD
 log_level: ERROR
 root_path: ./http-test-suite
 cpu_num: 2
+timeout: 10
