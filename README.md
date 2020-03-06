@@ -26,7 +26,16 @@ docker run -it -v /{absolute_path_to_project}/tp_highload_static_server/http-tes
  ```
  
  #### My server RPS:
+ внутри докера, без многопоточности
 ![](benchmarks/my_inside_docker.png)
+   
+ без докера, с многопоточностью
+![](benchmarks/my_outside_docker_with_multiprocessing.png)
+
  
  #### Nginx RPS:
+ внутри докера
  ![](benchmarks/nginx_inside_docker.png)
+ 
+ 
+ 
