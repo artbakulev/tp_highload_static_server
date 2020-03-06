@@ -1,22 +1,32 @@
-import logging
-import socket as s
 import asyncio
+import multiprocessing
+import socket as s
 
-from app.network.Response import Response
 from app.network.Request import Request
+from app.network.Response import Response
 
 
-class Worker:
-    def __init__(self, loop: asyncio.AbstractEventLoop, socket, config=None):
+class Worker(multiprocessing.Process):
+    def __init__(self, socket, config=None):
+        super().__init__()
         self.config = config
         self.socket: s.socket = socket
-        self.loop: asyncio.AbstractEventLoop = loop
+        self.loop: asyncio.AbstractEventLoop = None
         self.is_run = True
+        self.is_stopped = False
 
-    async def run(self):
+    def run(self):
+        self.loop = asyncio.get_event_loop()
+        try:
+            self.loop.run_until_complete(self.__run())
+        except KeyboardInterrupt:
+            self.loop.close()
+
+    async def __run(self):
         while self.is_run:
             conn, _ = await self.loop.sock_accept(self.socket)
-            await self.loop.create_task(self.handle(conn))
+            conn.settimeout(self.config.get_int('timeout'))
+            self.loop.create_task(self.handle(conn))
 
     async def handle(self, conn):
         request = await self.loop.sock_recv(conn, self.config.get_int('max_socket_size', fallback=1024))
@@ -27,6 +37,5 @@ class Worker:
         await response.send(self.loop, conn)
         conn.close()
 
-    def stop(self):
+    async def stop(self):
         self.is_run = False
-        self.socket.close()
